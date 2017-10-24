@@ -1,0 +1,98 @@
+object Form1: TForm1
+  Left = 369
+  Height = 379
+  Top = 285
+  Width = 504
+  Caption = 'Form1'
+  ClientHeight = 379
+  ClientWidth = 504
+  LCLVersion = '1.6.4.0'
+  object Button2: TButton
+    Left = 16
+    Height = 25
+    Top = 252
+    Width = 252
+    Caption = 'Выполнить'
+    OnClick = Button2Click
+    TabOrder = 0
+  end
+  object LabeledEdit1: TLabeledEdit
+    Left = 16
+    Height = 23
+    Top = 24
+    Width = 192
+    EditLabel.AnchorSideLeft.Control = LabeledEdit1
+    EditLabel.AnchorSideRight.Control = LabeledEdit1
+    EditLabel.AnchorSideRight.Side = asrBottom
+    EditLabel.AnchorSideBottom.Control = LabeledEdit1
+    EditLabel.Left = 16
+    EditLabel.Height = 15
+    EditLabel.Top = 6
+    EditLabel.Width = 192
+    EditLabel.Caption = 'Кабинет'
+    EditLabel.ParentColor = False
+    TabOrder = 1
+  end
+  object LabeledEdit2: TLabeledEdit
+    Left = 16
+    Height = 23
+    Top = 72
+    Width = 192
+    EditLabel.AnchorSideLeft.Control = LabeledEdit2
+    EditLabel.AnchorSideRight.Control = LabeledEdit2
+    EditLabel.AnchorSideRight.Side = asrBottom
+    EditLabel.AnchorSideBottom.Control = LabeledEdit2
+    EditLabel.Left = 16
+    EditLabel.Height = 15
+    EditLabel.Top = 54
+    EditLabel.Width = 192
+    EditLabel.Caption = 'Расписание Бакалавриата'
+    EditLabel.ParentColor = False
+    TabOrder = 4
+    TabStop = False
+  end
+  object LabeledEdit3: TLabeledEdit
+    Left = 16
+    Height = 23
+    Top = 120
+    Width = 192
+    EditLabel.AnchorSideLeft.Control = LabeledEdit3
+    EditLabel.AnchorSideRight.Control = LabeledEdit3
+    EditLabel.AnchorSideRight.Side = asrBottom
+    EditLabel.AnchorSideBottom.Control = LabeledEdit3
+    EditLabel.Left = 16
+    EditLabel.Height = 15
+    EditLabel.Top = 102
+    EditLabel.Width = 192
+    EditLabel.Caption = 'Расписание Магистратуры'
+    EditLabel.ParentColor = False
+    TabOrder = 5
+    TabStop = False
+  end
+  object Button1: TButton
+    Left = 232
+    Height = 25
+    Top = 72
+    Width = 75
+    Caption = 'Открыть'
+    OnClick = Button1Click
+    TabOrder = 2
+  end
+  object Button3: TButton
+    Left = 232
+    Height = 25
+    Top = 120
+    Width = 75
+    Caption = 'Открыть'
+    OnClick = Button3Click
+    TabOrder = 3
+  end
+  object OpenDialog1: TOpenDialog
+    left = 405
+    top = 210
+  end
+  object SelectDirectoryDialog1: TSelectDirectoryDialog
+    left = 394
+    top = 292
+  end
+end
