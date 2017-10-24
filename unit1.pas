@@ -157,8 +157,11 @@ begin
             FileName := CreateTemplate(SelectDirectoryDialog1.FileName, LabeledEdit1.Text);
             Rasp(LabeledEdit2.Text, FileName, LabeledEdit1.Text, 8, 2, 1);
             Rasp(LabeledEdit3.Text, FileName, LabeledEdit1.Text, 10, 2, 4);
+            ShowMessage('Выполнено успешно!');
           end;
-      end;
+      end
+  else
+    ShowMessage('Файлы не Excel расшинерия');
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);

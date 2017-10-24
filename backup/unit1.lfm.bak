@@ -48,7 +48,8 @@ object Form1: TForm1
     EditLabel.Width = 192
     EditLabel.Caption = 'Расписание Бакалавриата'
     EditLabel.ParentColor = False
-    TabOrder = 4
+    ReadOnly = True
+    TabOrder = 5
     TabStop = False
   end
   object LabeledEdit3: TLabeledEdit
@@ -66,7 +67,8 @@ object Form1: TForm1
     EditLabel.Width = 192
     EditLabel.Caption = 'Расписание Магистратуры'
     EditLabel.ParentColor = False
-    TabOrder = 5
+    ReadOnly = True
+    TabOrder = 4
     TabStop = False
   end
   object Button1: TButton
