@@ -146,22 +146,37 @@ procedure TForm1.Button2Click(Sender: TObject);
 var
   FileName: string;
 begin
-  if (LabeledEdit1.Text <> '') and ((ExtractFileExt(LabeledEdit2.Text) = '.xls')
-    or (ExtractFileExt(LabeledEdit2.Text) = '.xlsx')) and
-    ((ExtractFileExt(LabeledEdit3.Text) = '.xls')
-    or (ExtractFileExt(LabeledEdit3.Text) = '.xlsx')) then
+   if (LabeledEdit2.Text = '') or  (LabeledEdit3.Text = '')
+    then
       begin
-        SelectDirectoryDialog1.Title:='Выберите папку для сохранения результата';
-        if SelectDirectoryDialog1.Execute then
-          begin
-            FileName := CreateTemplate(SelectDirectoryDialog1.FileName, LabeledEdit1.Text);
-            Rasp(LabeledEdit2.Text, FileName, LabeledEdit1.Text, 8, 2, 1);
-            Rasp(LabeledEdit3.Text, FileName, LabeledEdit1.Text, 10, 2, 4);
-            ShowMessage('Выполнено успешно!');
-          end;
-      end
-  else
-    ShowMessage('Файлы не Excel расшинерия');
+        ShowMessage('Укажите оба файла');
+        exit;
+      end;
+
+   if  not(((ExtractFileExt(LabeledEdit2.Text) <> '.xls')
+    or (ExtractFileExt(LabeledEdit2.Text) <> '.xlsx')) or
+    ((ExtractFileExt(LabeledEdit3.Text) <> '.xls')
+    or (ExtractFileExt(LabeledEdit3.Text) <> '.xlsx')))
+    then
+      begin
+        ShowMessage('Файлы не Excel расшинерия');
+        Exit;
+      end;
+
+   if (LabeledEdit1.Text = '') then
+     begin
+       ShowMessage('Укажите номер кабинета или фамилию преподавателя');
+       Exit;
+     end;
+
+   SelectDirectoryDialog1.Title:='Выберите папку для сохранения результата';
+     if SelectDirectoryDialog1.Execute then
+       begin
+         FileName := CreateTemplate(SelectDirectoryDialog1.FileName, LabeledEdit1.Text);
+         Rasp(LabeledEdit2.Text, FileName, LabeledEdit1.Text, 8, 2, 1);
+         Rasp(LabeledEdit3.Text, FileName, LabeledEdit1.Text, 10, 2, 4);
+         ShowMessage('Выполнено успешно!');
+       end;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
