@@ -6,7 +6,9 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 379
   ClientWidth = 504
-  LCLVersion = '1.6.4.0'
+  OnCreate = FormCreate
+  SessionProperties = 'Height;LabeledEdit1.Text;LabeledEdit2.Text;LabeledEdit3.Text;Left;Top;Width;SelectDirectoryDialog1.InitialDir'
+  LCLVersion = '1.6.2.0'
   object Button2: TButton
     Left = 16
     Height = 25
@@ -96,5 +98,11 @@ object Form1: TForm1
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     left = 394
     top = 292
+  end
+  object XMLPropStorage1: TXMLPropStorage
+    StoredValues = <>
+    FileName = 'myconfig.xml'
+    left = 398
+    top = 76
   end
 end

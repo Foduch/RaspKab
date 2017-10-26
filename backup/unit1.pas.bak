@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, variants, comobj;
+  ExtCtrls, XMLPropStorage, variants, comobj, ShellApi, windows;
 
 type
 
@@ -21,9 +21,11 @@ type
     LabeledEdit3: TLabeledEdit;
     OpenDialog1: TOpenDialog;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
+    XMLPropStorage1: TXMLPropStorage;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { private declarations }
   public
@@ -43,16 +45,10 @@ var
 implementation
 
 {$R *.lfm}
-Function CreateTemplate(Directory, kab: string):string;
+procedure CreateTemplate(Sheet: OleVariant);
 var
-  Excel, Sheet: OleVariant;
   i, j: integer;
 begin
-  Excel:=CreateOleObject('Excel.Application');
-  Excel.Visible:=False;
-  Excel.Workbooks.Add;
-  Sheet:=Excel.Workbooks[1].WorkSheets[1];
-
   j := 2;
   for i:=1 to Les do
     Sheet.Cells[i,j] := i;
@@ -65,32 +61,17 @@ begin
         Sheet.Range[Sheet.Cells.Item[1,j+1], Sheet.Cells.Item[Les,j+1]].Copy(
           Sheet.Range[Sheet.Cells[(i-1)*Les+1,j+1], Sheet.Cells[i*Les,j+1]]);
     end;
-
-  Excel.WorkBooks[1].SaveAs(WideString(Directory+'Kab'+kab+'.xlsx'));
-  Excel.Quit;
-  Excel:=Unassigned;
-  Sheet:=Unassigned;
-  CreateTemplate:=Directory+'Kab'+kab+'.xlsx';
 end;
 
-procedure Rasp(RaspFileName, ResFileName, kab :string; StartRow, StartCol, FirstLesson: integer);
+procedure Rasp(ResSheet, Sheet: OleVariant; kab :string; StartRow, StartCol, FirstLesson: integer);
 var
-  Excel, Books, Sheet, ResSheet: OleVariant;
-  i, j, k, z, Day, LesNum: integer;
+  i, j, z, Day, LesNum: integer;
 begin
-  Excel:=CreateOleObject('Excel.Application');
-  Excel.Visible:=False;
-  Excel.Workbooks.Open(WideString(ResFileName));
-  Excel.Workbooks.Open(WideString(RaspFileName));
-  ResSheet:=Excel.WorkBooks[1].Sheets[1];
-  Sheet := Excel.WorkBooks[2].Sheets[1];
-
   ResSheet.Columns[3].ColumnWidth := 25;
   ResSheet.Columns[4].ColumnWidth := 25;
   ResSheet.Columns[5].ColumnWidth := 25;
 
   Day := -1;
-  k:=1;
   z:=3;
   i:=StartRow;
   j:=StartCol;
@@ -105,6 +86,9 @@ begin
           begin
             inc(Day);
             ResSheet.Cells[Day*Les + LesNum,1]:= Sheet.cells[i,1].text ;
+            ResSheet.Cells[Day*Les + LesNum,1].Orientation := 90;
+            ResSheet.Cells[Day*Les + LesNum,1].HorizontalAlignment := -4108;
+            ResSheet.Cells[Day*Les + LesNum,1].VerticalAlignment := -4108;
           end;
         inc(j);
         while (j<100) do
@@ -131,11 +115,6 @@ begin
       j:=StartCol;
     end;
   end;
-  Excel.WorkBooks[1].SaveAs(WideString(ResFileName));
-  Excel.Quit;
-  Excel:=Unassigned;
-  Sheet:=Unassigned;
-  ResSheet:=Unassigned;
 end;
 
 { TForm1 }
@@ -144,7 +123,8 @@ end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 var
-  FileName: string;
+  Excel, SheetBak, SheetMag, ResSheet: OleVariant;
+  FileName: widestring;
 begin
    if (LabeledEdit2.Text = '') or  (LabeledEdit3.Text = '')
     then
@@ -153,10 +133,11 @@ begin
         exit;
       end;
 
-   if ((ExtractFileExt(LabeledEdit2.Text) = '.xls')
-    or (ExtractFileExt(LabeledEdit2.Text) = '.xlsx')) or
-    ((ExtractFileExt(LabeledEdit3.Text) = '.xls')
-    or (ExtractFileExt(LabeledEdit3.Text) = '.xlsx')) then
+   if  not(((ExtractFileExt(LabeledEdit2.Text) <> '.xls')
+    or (ExtractFileExt(LabeledEdit2.Text) <> '.xlsx')) or
+    ((ExtractFileExt(LabeledEdit3.Text) <> '.xls')
+    or (ExtractFileExt(LabeledEdit3.Text) <> '.xlsx')))
+    then
       begin
         ShowMessage('Файлы не Excel расшинерия');
         Exit;
@@ -171,10 +152,30 @@ begin
    SelectDirectoryDialog1.Title:='Выберите папку для сохранения результата';
      if SelectDirectoryDialog1.Execute then
        begin
-         FileName := CreateTemplate(SelectDirectoryDialog1.FileName, LabeledEdit1.Text);
-         Rasp(LabeledEdit2.Text, FileName, LabeledEdit1.Text, 8, 2, 1);
-         Rasp(LabeledEdit3.Text, FileName, LabeledEdit1.Text, 10, 2, 4);
+         Excel:=CreateOleObject('Excel.Application');
+         Excel.Visible:=False;
+         Excel.Workbooks.Add;
+         Excel.Workbooks.Open(WideString(LabeledEdit2.Text));
+         Excel.Workbooks.Open(WideString(LabeledEdit3.Text));
+         ResSheet:=Excel.Workbooks[1].WorkSheets[1];
+         SheetBak:=Excel.Workbooks[2].WorkSheets[1];
+         SheetMag:=Excel.Workbooks[3].WorkSheets[1];
+         FileName:=WideString(SelectDirectoryDialog1.FileName +'\Kab'+LabeledEdit1.Text+'.xlsx');
+
+         CreateTemplate(ResSheet);
+         Rasp(ResSheet, SheetBak, LabeledEdit1.Text, 8, 2, 1);
+         Rasp(ResSheet, SheetMag, LabeledEdit1.Text, 10, 2, 4);
+         SelectDirectoryDialog1.InitialDir:=SelectDirectoryDialog1.FileName;
+
+         Excel.WorkBooks[1].SaveAs(FileName);
+         Excel.Quit;
+         Excel:=Unassigned;
+         ResSheet:=Unassigned;
+         SheetBak:=Unassigned;
+         SheetMag:=Unassigned;
          ShowMessage('Выполнено успешно!');
+         ShowMessage(FileName);
+         ShellExecute(handle,'open',PChar(FileName), '','',SW_MAXIMIZE);
        end;
 end;
 
@@ -184,6 +185,10 @@ begin
   if OpenDialog1.Execute then
     if OpenDialog1.FileName <> ''
        then LabeledEdit3.Text := OpenDialog1.FileName;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
