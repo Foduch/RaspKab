@@ -154,6 +154,7 @@ begin
        begin
          Excel:=CreateOleObject('Excel.Application');
          Excel.Visible:=False;
+         //Excel.DisableAlerts:=true;
          Excel.Workbooks.Add;
          Excel.Workbooks.Open(WideString(LabeledEdit2.Text));
          Excel.Workbooks.Open(WideString(LabeledEdit3.Text));
@@ -168,14 +169,19 @@ begin
          SelectDirectoryDialog1.InitialDir:=SelectDirectoryDialog1.FileName;
 
          Excel.WorkBooks[1].SaveAs(FileName);
-         Excel.Quit;
-         Excel:=Unassigned;
          ResSheet:=Unassigned;
          SheetBak:=Unassigned;
          SheetMag:=Unassigned;
-         ShowMessage('Выполнено успешно!');
+         Excel.WorkBooks.Close;
+
+         //ShowMessage('Выполнено!');
+         Excel.Workbooks.Open(FileName);
+         Excel.Visible:=True;
+
+         //Excel.Quit;
+         Excel:=Unassigned;
          //ShowMessage(FileName);
-         ShellExecute(handle,'open',PChar(String(FileName)), '','',SW_MAXIMIZE);
+         //ShellExecute(handle,'open',PChar(SelectDirectoryDialog1.FileName +'\Kab'+LabeledEdit1.Text+'.xlsx'), '','',SW_MAXIMIZE);
        end;
 end;
 
