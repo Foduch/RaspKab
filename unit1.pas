@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, XMLPropStorage, variants, comobj, ShellApi, windows;
+  ExtCtrls, XMLPropStorage, ComCtrls, variants, comobj, ShellApi, windows;
 
 type
 
@@ -20,6 +20,7 @@ type
     LabeledEdit2: TLabeledEdit;
     LabeledEdit3: TLabeledEdit;
     OpenDialog1: TOpenDialog;
+    ProgressBar1: TProgressBar;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     XMLPropStorage1: TXMLPropStorage;
     procedure Button1Click(Sender: TObject);
@@ -126,12 +127,34 @@ var
   Excel, SheetBak, SheetMag, ResSheet: OleVariant;
   FileName: widestring;
 begin
-   if (LabeledEdit2.Text = '') or  (LabeledEdit3.Text = '')
+
+
+  if (LabeledEdit2.Text = '') or  (LabeledEdit3.Text = '')
     then
       begin
         ShowMessage('Укажите оба файла');
         exit;
+      end
+  else
+  begin
+    if not(FileExists(LabeledEdit2.Text)) then
+    begin
+      ShowMessage('Файл ' + ExtractFileName(LabeledEdit2.Text)+ ' не найден');
+      LabeledEdit2.Text:='';
+      OpenDialog1.FileName:='';
+      OpenDialog1.InitialDir:='';
+      Exit;
+    end;
+
+  if not(FileExists(LabeledEdit3.Text)) then
+      begin
+        ShowMessage('Файл ' + ExtractFileName(LabeledEdit3.Text)+ ' не найден');
+        LabeledEdit3.Text:='';
+        OpenDialog1.FileName:='';
+        OpenDialog1.InitialDir:='';
+        Exit;
       end;
+  end;
 
    if  not(((ExtractFileExt(LabeledEdit2.Text) <> '.xls')
     or (ExtractFileExt(LabeledEdit2.Text) <> '.xlsx')) or
@@ -148,8 +171,9 @@ begin
        ShowMessage('Укажите номер кабинета или фамилию преподавателя');
        Exit;
      end;
-
    SelectDirectoryDialog1.Title:='Выберите папку для сохранения результата';
+   ProgressBar1.Visible:=True;
+   Application.ProcessMessages;
      if SelectDirectoryDialog1.Execute then
        begin
          Excel:=CreateOleObject('Excel.Application');
@@ -174,6 +198,7 @@ begin
          SheetMag:=Unassigned;
          Excel.WorkBooks.Close;
 
+
          //ShowMessage('Выполнено!');
          Excel.Workbooks.Open(FileName);
          Excel.Visible:=True;
@@ -183,7 +208,9 @@ begin
          //ShowMessage(FileName);
          //ShellExecute(handle,'open',PChar(SelectDirectoryDialog1.FileName +'\Kab'+LabeledEdit1.Text+'.xlsx'), '','',SW_MAXIMIZE);
        end;
-end;
+     ProgressBar1.Visible:=False;
+  end;
+
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
