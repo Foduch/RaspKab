@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CONFIG>
   <TApplication>
-    <Form1 Form1_Top="308" Form1_Left="435" Form1_Width="504" Form1_Height="378" LabeledEdit1_Text="Чуев" LabeledEdit2_Text="D:\_12-14\CH\RaspKab\Bakalavry_2017.xls" LabeledEdit3_Text="D:\_12-14\CH\RaspKab\Magistry_2017-18.xls" OpenDialog1_FileName="" SelectDirectoryDialog1_InitialDir="D:\_12-14"/>
+    <Form1 Form1_Top="162" Form1_Left="552" Form1_Width="504" Form1_Height="378" LabeledEdit1_Text="Чуев" LabeledEdit2_Text="D:\_12-14\CH\RaspKab\Bakalavry_2017.xls" LabeledEdit3_Text="D:\_12-14\CH\RaspKab\Magistry_2017-18.xls" OpenDialog1_FileName="" SelectDirectoryDialog1_InitialDir="D:\_12-14"/>
   </TApplication>
 </CONFIG>

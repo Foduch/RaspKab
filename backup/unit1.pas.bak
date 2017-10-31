@@ -53,7 +53,6 @@ begin
   j := 2;
   for i:=1 to Les do
     Sheet.Cells[i,j] := i;
-
   j:= 1;
   for i := 1 to  Days do
     begin
@@ -66,7 +65,7 @@ end;
 
 procedure Rasp(ResSheet, Sheet: OleVariant; kab :string; StartRow, StartCol, FirstLesson: integer);
 var
-  i, j, z, Day, LesNum: integer;
+  i, j, z, Day, LesNum, RowsCount: integer;
 begin
   ResSheet.Columns[3].ColumnWidth := 25;
   ResSheet.Columns[4].ColumnWidth := 25;
@@ -77,8 +76,10 @@ begin
   i:=StartRow;
   j:=StartCol;
 
-  while (i<51) do
+  RowsCount:=Sheet.UsedRange.Rows.Count;
+  while (i<RowsCount) do
   begin
+    Form1.ProgressBar1.StepIt;
     if (Pos(' пара', Sheet.cells[i,j].text)>0) then
       begin
         LesNum:=StrToInt(Copy(Sheet.cells[i,j].text, 1, 1));
@@ -172,8 +173,11 @@ begin
        Exit;
      end;
    SelectDirectoryDialog1.Title:='Выберите папку для сохранения результата';
+
+   ProgressBar1.Position:=0;
    ProgressBar1.Visible:=True;
    Application.ProcessMessages;
+
      if SelectDirectoryDialog1.Execute then
        begin
          Excel:=CreateOleObject('Excel.Application');
@@ -185,16 +189,22 @@ begin
          ResSheet:=Excel.Workbooks[1].WorkSheets[1];
          SheetBak:=Excel.Workbooks[2].WorkSheets[1];
          SheetMag:=Excel.Workbooks[3].WorkSheets[1];
-         FileName:=WideString(SelectDirectoryDialog1.FileName +'\Kab'+LabeledEdit1.Text+'.xlsx');
 
-         Application.ProcessMessages;
+         FileName:=WideString(SelectDirectoryDialog1.FileName +'\Kab'+LabeledEdit1.Text+'.xlsx');
 
          CreateTemplate(ResSheet);
          Rasp(ResSheet, SheetBak, LabeledEdit1.Text, 8, 2, 1);
          Rasp(ResSheet, SheetMag, LabeledEdit1.Text, 10, 2, 4);
          SelectDirectoryDialog1.InitialDir:=SelectDirectoryDialog1.FileName;
 
-         Excel.WorkBooks[1].SaveAs(FileName);
+         if DeleteFileUTF8(FileName) then
+         Excel.WorkBooks[1].SaveAs(FileName)
+         else
+           if FileExistsUTF8(FileName) then
+             ShowMessage('Нет доступа к файлу')
+           else
+             Excel.WorkBooks[1].SaveAs(FileName);
+
          ResSheet:=Unassigned;
          SheetBak:=Unassigned;
          SheetMag:=Unassigned;
@@ -210,6 +220,7 @@ begin
          //ShowMessage(FileName);
          //ShellExecute(handle,'open',PChar(SelectDirectoryDialog1.FileName +'\Kab'+LabeledEdit1.Text+'.xlsx'), '','',SW_MAXIMIZE);
        end;
+     Form1.ProgressBar1.Position:=100;
      ProgressBar1.Visible:=False;
   end;
 

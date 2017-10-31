@@ -1,10 +1,10 @@
 object Form1: TForm1
-  Left = 485
-  Height = 387
-  Top = 254
+  Left = 71
+  Height = 382
+  Top = 92
   Width = 475
   Caption = 'Form1'
-  ClientHeight = 387
+  ClientHeight = 382
   ClientWidth = 475
   OnCreate = FormCreate
   SessionProperties = 'Height;LabeledEdit1.Text;LabeledEdit2.Text;LabeledEdit3.Text;Left;Top;Width;SelectDirectoryDialog1.InitialDir'
@@ -96,7 +96,7 @@ object Form1: TForm1
     Height = 20
     Top = 295
     Width = 249
-    Style = pbstMarquee
+    Step = 2
     TabOrder = 6
     Visible = False
   end
